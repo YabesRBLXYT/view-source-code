@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Source Code Viewer</title>
+</head>
+<body>
+    <h1>HTML Source Code Viewer</h1>
+    <div id="output"></div>
+
+    <script>
+        // Get the 'url' parameter from the query string
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get('url');
+
+        if (url) {
+            // Encode the URL as required by the API
+            const encodedUrl = encodeURIComponent(url);
+
+            // Call the POST API with the encoded URL
+            fetch('https://www.codebeautify.com/URLService', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `path=${encodedUrl}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Display the response in a preformatted block
+                document.getElementById('output').innerHTML = `<pre>${escapeHTML(data)}</pre>`;
+            })
+            .catch(error => {
+                document.getElementById('output').textContent = 'Error: ' + error;
+            });
+        } else {
+            document.getElementById('output').textContent = 'Please provide a valid URL using the "url" query parameter.';
+        }
+
+        // Function to escape HTML characters
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
+  
