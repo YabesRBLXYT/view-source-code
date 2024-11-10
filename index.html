@@ -6,19 +6,17 @@
     <title>HTML Source Code Viewer</title>
 </head>
 <body>
-    <h1>HTML Source Code Viewer</h1>
-    <div id="output"></div>
+    <div id="output">Loading...</div>
 
     <script>
-        // Get the 'url' parameter from the query string
+        // Mendapatkan URL parameter dari query string
         const params = new URLSearchParams(window.location.search);
         const url = params.get('url');
 
         if (url) {
-            // Encode the URL as required by the API
+            // Encode URL sebelum mengirimkan request POST
             const encodedUrl = encodeURIComponent(url);
 
-            // Call the POST API with the encoded URL
             fetch('https://www.codebeautify.com/URLService', {
                 method: 'POST',
                 headers: {
@@ -28,25 +26,16 @@
             })
             .then(response => response.text())
             .then(data => {
-                // Display the response in a preformatted block
-                document.getElementById('output').innerHTML = `<pre>${escapeHTML(data)}</pre>`;
+                // Menampilkan respon di halaman
+                document.getElementById('output').textContent = data;
             })
             .catch(error => {
-                document.getElementById('output').textContent = 'Error: ' + error;
+                console.error('Error:', error);
+                document.getElementById('output').textContent = 'An error occurred while fetching the data.';
             });
         } else {
-            document.getElementById('output').textContent = 'Please provide a valid URL using the "url" query parameter.';
-        }
-
-        // Function to escape HTML characters
-        function escapeHTML(str) {
-            return str.replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
+            document.getElementById('output').textContent = 'No URL provided.';
         }
     </script>
 </body>
 </html>
-  
