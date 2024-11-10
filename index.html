@@ -7,7 +7,6 @@
     <title>HTML Source Code Viewer</title>
 </head>
 <body>
-    <h1>HTML Source Code Viewer</h1>
     <pre id="responseOutput">Loading...</pre>
 
     <script>
@@ -26,14 +25,19 @@
                 },
                 body: `path=${url}`
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
             .then(data => {
                 // Menampilkan respon di halaman
                 document.getElementById('responseOutput').textContent = data;
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('responseOutput').textContent = 'Error: ' + error;
+                document.getElementById('responseOutput').textContent = 'Error fetching data: ' + error.message;
             });
         } else {
             document.getElementById('responseOutput').textContent = 'No URL provided.';
