@@ -2,37 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Source Code Viewer</title>
 </head>
 <body>
-    <div id="output">Loading...</div>
+    <h1>HTML Source Code Viewer</h1>
+    <pre id="responseOutput">Loading...</pre>
 
     <script>
         // Mendapatkan URL parameter dari query string
         const params = new URLSearchParams(window.location.search);
-        const url = params.get('url');
+        let url = params.get('url');
 
         if (url) {
-            // Membuat request POST dengan URL yang sudah di-encode
+            // Pastikan URL di-encode untuk kebutuhan request POST
+            url = encodeURIComponent(url);
+
             fetch('https://www.codebeautify.com/URLService', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `path=${url}` // URL sudah dalam format yang di-encode, misalnya "https%3A%2F%2Fexample.com"
+                body: `path=${url}`
             })
             .then(response => response.text())
             .then(data => {
                 // Menampilkan respon di halaman
-                document.getElementById('output').textContent = data;
+                document.getElementById('responseOutput').textContent = data;
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('output').textContent = 'An error occurred while fetching the data.';
+                document.getElementById('responseOutput').textContent = 'Error: ' + error;
             });
         } else {
-            document.getElementById('output').textContent = 'No URL provided.';
+            document.getElementById('responseOutput').textContent = 'No URL provided.';
         }
     </script>
 </body>
